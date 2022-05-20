@@ -1,8 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantControl.Server", "PlantControl.Server\PlantControl.Server.csproj", "{DE1E7A99-0CD4-495D-9C42-6CFC971D3734}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantControl.Models", "PlantControl.Models\PlantControl.Models.csproj", "{30C45C92-6BA3-412D-A141-D1B0CC3E5D62}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DE1E7A99-0CD4-495D-9C42-6CFC971D3734}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE1E7A99-0CD4-495D-9C42-6CFC971D3734}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE1E7A99-0CD4-495D-9C42-6CFC971D3734}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE1E7A99-0CD4-495D-9C42-6CFC971D3734}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30C45C92-6BA3-412D-A141-D1B0CC3E5D62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30C45C92-6BA3-412D-A141-D1B0CC3E5D62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30C45C92-6BA3-412D-A141-D1B0CC3E5D62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30C45C92-6BA3-412D-A141-D1B0CC3E5D62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
