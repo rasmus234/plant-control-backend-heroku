@@ -1,9 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using PlantControl.Server;
 using PlantControl.Server.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors();
 builder.Services.AddSignalR();
+builder.Services.AddDbContext<PlantControlContext>(optionsBuilder =>
+{
+    optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("PlantControlDatabase")!);
+});
 
 var app = builder.Build();
 
