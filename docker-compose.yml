@@ -1,0 +1,9 @@
+services:
+  backend:
+    build:
+      context: .
+    image: localhost:7002/plantcontrol-backend
+    container_name: ${BACKEND_CONTAINER}
+    restart: always
+    ports:
+      - ${BACKEND_PORT}:80

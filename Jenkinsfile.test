@@ -1,0 +1,71 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Run unit test(s)') {
+            steps {
+                echo 'Running unit test(s)...'
+            }
+        }
+
+        stage('Build, Dockerize, and deploy') {
+            when {
+                anyOf {
+                    changeset 'PlantControl.Server/**'
+                }
+            }
+
+            stages {
+                stage('Build API') {
+                    steps {
+                        dir('PlantControl.Server') {
+                            sh 'sudo dotnet clean'
+                            sh 'sudo dotnet publish -c Release'
+                        }
+                    }
+                }
+
+                stage('Build image(s)') {
+                    steps {
+                        sh 'docker compose --env-file test.env build'
+                    }
+                }
+
+                stage('Stop and remove old container(s)') {
+                    steps {
+                        script {
+                            try {
+                                sh 'docker compose -p test-backend --env-file test.env down'
+                            } catch (err) {}
+                        }
+                    }
+                }
+
+                stage('Create and start new container(s)') {
+                    steps {
+                        sh 'docker compose -p test-backend --env-file test.env up -d'
+                        sh 'docker ps'
+                    }
+                }
+
+                stage('Push image(s) to registry') {
+                    steps {
+                        sh 'docker compose --env-file test.env push'
+                    }
+                }
+
+                stage('Deploy to production') {
+                    steps {
+                        build job: 'prod-backend', wait: false
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Finished.'
+        }
+    }
+}
