@@ -18,7 +18,7 @@ public class UnregisteredLoggerHub : Hub<IUnregisteredLoggerHub>
     {
         //remove logger from dictionary
         var exists = UnregisteredLoggers.Remove(Context.ConnectionId);
-        //if logger existed, tell all subscribers
+        //if logger was removed, tell all subscribers
         if (exists)
         {
             await Clients.Group(SubscriberGroup).RemoveUnregisteredLogger(Context.ConnectionId);
