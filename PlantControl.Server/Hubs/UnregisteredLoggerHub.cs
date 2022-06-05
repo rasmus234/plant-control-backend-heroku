@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using System.Text;
+using System.Text.Json;
+using Microsoft.AspNetCore.SignalR;
 using PlantControl.Models;
 
 namespace PlantControl.Server.Hubs;
@@ -45,7 +47,16 @@ public class UnregisteredLoggerHub : Hub<IUnregisteredLoggerHub>
     }
     
     //register a unregistered logger and remove it from the dictionary. after that, tell all subscribers
-    public async Task RegisterLogger(UnregisteredLogger logger)
+    public async Task<Logger?> RegisterLogger(UnregisteredLogger logger)
     {
+        if (!UnregisteredLoggers.ContainsKey(logger.Id)) return null;
+        using var client = new HttpClient();
+        var json = JsonSerializer.Serialize(logger, new JsonSerializerOptions() {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+        var content = new StringContent(json);
+        var response = await client.PostAsync("http://localhost:3000/loggers", content);
+        var loggerJson = await response.Content.ReadAsStringAsync();
+        var registeredLogger = JsonSerializer.Deserialize<Logger>(loggerJson);
+        return registeredLogger;
+
     }
 }
