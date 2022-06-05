@@ -11,9 +11,11 @@ app.UseCors(policyBuilder =>
 {
     policyBuilder.AllowAnyHeader();
     policyBuilder.AllowAnyMethod();
+    policyBuilder.AllowCredentials();
     policyBuilder.SetIsOriginAllowed(_ => true);
 });
 
 app.MapHub<LoggerHub>("/hubs/logger");
+app.MapHub<UnregisteredLoggerHub>("/hubs/unregisteredLogger");
 
 app.Run();
