@@ -7,8 +7,10 @@ public interface ILoggerHub
     Task GetConfig();
     
     Task SetConfig(LoggerConfig loggerConfig);
-    Task SendConfig(LoggerConfig loggerConfig);
+    Task ReceiveConfig(LoggerConfig loggerConfig);
     
     Task NewLogger(Logger logger);
     Task RemoveLogger(string id);
+    
+    Task ReceiveLog(Log log);
 }

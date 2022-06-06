@@ -56,18 +56,17 @@ public class LoggerHub : Hub<ILoggerHub>
     [HubMethodName("SendConfig")]
     public async Task OnSendConfig(LoggerConfig loggerConfig)
     {
-        await Clients.Group(SubscriberGroup).SendConfig(loggerConfig);
+        await Clients.Group(SubscriberGroup).ReceiveConfig(loggerConfig);
     }
 
-    //create a new unregistered logger and add it to the dictionary. after that, tell all subscribers
+    //create a new logger and add it to the dictionary. after that, tell all subscribers
     [HubMethodName("ConnectLogger")]
-    public async Task<string> OnConnectLogger(string name, string id)
+    public async Task OnConnectLogger(string name, string id)
     {
-        var logger = new Logger {Id = Context.ConnectionId, LoginTime = DateTime.Now, Name = name};
+        var logger = new Logger {Id = id, LoginTime = DateTime.Now, Name = name};
         Loggers[Context.ConnectionId] = logger;
         await Groups.AddToGroupAsync(Context.ConnectionId, LoggerGroup);
         await Clients.Group(SubscriberGroup).NewLogger(logger);
-        return "TEST";
     }
 
     //subscribe to messages about loggers
@@ -86,8 +85,16 @@ public class LoggerHub : Hub<ILoggerHub>
 
     //return all online loggers
     [HubMethodName("GetOnlineLoggers")]
-    public async Task<IEnumerable<Logger>> OnGetOnlineLoggers()
+    public IEnumerable<Logger> OnGetOnlineLoggers()
     {
         return Loggers.Values;
+    }
+
+    
+    //forward a message from a logger to all subscribers
+    [HubMethodName("SendLog")]
+    public async Task OnSendLog(Log log)
+    {
+        await Clients.Group(SubscriberGroup).ReceiveLog(log);
     }
 }
