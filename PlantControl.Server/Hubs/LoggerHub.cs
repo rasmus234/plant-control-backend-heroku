@@ -33,7 +33,7 @@ public class LoggerHub : Hub<ILoggerHub>
     {
         var loggerId = loggerConfig.Logging.Id;
         var loggerConnectionId = Loggers.FirstOrDefault(x => x.Value.Id == loggerId).Key;
-        if (loggerConnectionId != null)
+        if (!string.IsNullOrEmpty(loggerConnectionId))
         {
             await Clients.Client(loggerConnectionId).SetConfig(loggerConfig);
         }
@@ -61,12 +61,13 @@ public class LoggerHub : Hub<ILoggerHub>
 
     //create a new unregistered logger and add it to the dictionary. after that, tell all subscribers
     [HubMethodName("ConnectLogger")]
-    public async Task OnConnectLogger(string name, string id)
+    public async Task<string> OnConnectLogger(string name, string id)
     {
         var logger = new Logger {Id = Context.ConnectionId, LoginTime = DateTime.Now, Name = name};
         Loggers[Context.ConnectionId] = logger;
         await Groups.AddToGroupAsync(Context.ConnectionId, LoggerGroup);
         await Clients.Group(SubscriberGroup).NewLogger(logger);
+        return "TEST";
     }
 
     //subscribe to messages about loggers
