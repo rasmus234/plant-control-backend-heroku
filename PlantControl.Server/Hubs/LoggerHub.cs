@@ -61,9 +61,9 @@ public class LoggerHub : Hub<ILoggerHub>
 
     //create a new logger and add it to the dictionary. after that, tell all subscribers
     [HubMethodName("ConnectLogger")]
-    public async Task OnConnectLogger(string name, string id)
+    public async Task OnConnectLogger(string id)
     {
-        var logger = new Logger {Id = id, LoginTime = DateTime.Now, Name = name};
+        var logger = new Logger {Id = id, LoginTime = DateTime.Now};
         Loggers[Context.ConnectionId] = logger;
         await Groups.AddToGroupAsync(Context.ConnectionId, LoggerGroup);
         await Clients.Group(SubscriberGroup).NewLogger(logger);

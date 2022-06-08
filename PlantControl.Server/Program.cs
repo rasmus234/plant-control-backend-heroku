@@ -16,6 +16,5 @@ app.UseCors(policyBuilder =>
 });
 
 app.MapHub<LoggerHub>("/hubs/logger");
-app.MapHub<UnregisteredLoggerHub>("/hubs/unregisteredLogger");
 
 app.Run();
