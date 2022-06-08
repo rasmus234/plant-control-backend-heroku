@@ -17,11 +17,11 @@ public class LoggerHub : Hub<ILoggerHub>
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         //remove logger from dictionary
-        var loggerRemoved = Loggers.Remove(Context.ConnectionId);
-        //if logger was removed, tell all subscribers
-        if (loggerRemoved)
+        var isLogger = Loggers.TryGetValue(Context.ConnectionId, out var logger);
+        if (isLogger)
         {
-            await Clients.Group(SubscriberGroup).RemoveLogger(Context.ConnectionId);
+            Loggers.Remove(Context.ConnectionId);
+            await Clients.Group(SubscriberGroup).RemoveLogger(logger.Id);
         }
 
         await base.OnDisconnectedAsync(exception);
