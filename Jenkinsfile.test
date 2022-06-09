@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Pull submodule(s)') {
             steps {
-                sh 'git submodule update --init --recursive'
+                sh 'git submodule update --init --recursive --remote'
             }
         }
 
