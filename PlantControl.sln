@@ -4,8 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantControl.Server", "Plan
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantControl.Tests", "PlantControl.Tests\PlantControl.Tests.csproj", "{FE7B8EE1-1E6C-4FB5-AAE0-0C780DE4CFCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantControl.Models", "models\PlantControl.Models.csproj", "{1E42584E-1C47-430F-8D07-81046B4D5276}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,9 +18,5 @@ Global
 		{FE7B8EE1-1E6C-4FB5-AAE0-0C780DE4CFCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE7B8EE1-1E6C-4FB5-AAE0-0C780DE4CFCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE7B8EE1-1E6C-4FB5-AAE0-0C780DE4CFCA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1E42584E-1C47-430F-8D07-81046B4D5276}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1E42584E-1C47-430F-8D07-81046B4D5276}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1E42584E-1C47-430F-8D07-81046B4D5276}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1E42584E-1C47-430F-8D07-81046B4D5276}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
