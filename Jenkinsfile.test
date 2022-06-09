@@ -3,7 +3,9 @@ pipeline {
 
     stages {
         stage('Pull submodule(s)') {
-            sh 'git submodule update --remote'
+            steps {
+                sh 'git submodule update'
+            }
         }
 
         stage('Run unit test(s)') {

@@ -8,6 +8,8 @@ public class LoggerHub : Hub<ILoggerHub>
 {
     private const string SubscriberGroup = "LoggersSubscribers";
     private const string LoggerGroup = "Loggers";
+    
+    //connectionId is key, logger is value
     public static Dictionary<string, Logger> Loggers { get; } = new();
 
     public override async Task OnConnectedAsync()
@@ -18,11 +20,11 @@ public class LoggerHub : Hub<ILoggerHub>
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         //remove logger from dictionary
-        var loggerRemoved = Loggers.Remove(Context.ConnectionId);
-        //if logger was removed, tell all subscribers
-        if (loggerRemoved)
+        var isLogger = Loggers.TryGetValue(Context.ConnectionId, out var logger);
+        if (isLogger)
         {
-            await Clients.Group(SubscriberGroup).RemoveLogger(Context.ConnectionId);
+            Loggers.Remove(Context.ConnectionId);
+            await Clients.Group(SubscriberGroup).RemoveLogger(logger.Id);
         }
 
         await base.OnDisconnectedAsync(exception);
@@ -62,12 +64,19 @@ public class LoggerHub : Hub<ILoggerHub>
 
     //create a new logger and add it to the dictionary. after that, tell all subscribers
     [HubMethodName("ConnectLogger")]
-    public async Task OnConnectLogger(string id)
+    public async Task<bool> OnConnectLogger(string id)
     {
+        //if logger already exists, return false
+        if (Loggers.Values.Any(x => x.Id == id))
+        {
+            return false;
+        }
+
         var logger = new Logger {Id = id, LoginTime = DateTime.Now};
         Loggers[Context.ConnectionId] = logger;
         await Groups.AddToGroupAsync(Context.ConnectionId, LoggerGroup);
         await Clients.Group(SubscriberGroup).NewLogger(logger);
+        return true;
     }
 
     //subscribe to messages about loggers
