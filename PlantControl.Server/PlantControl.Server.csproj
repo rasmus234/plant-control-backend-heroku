@@ -6,4 +6,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\plant-control-models\PlantControl.Models\PlantControl.Models.csproj" />
+    </ItemGroup>
+
 </Project>
