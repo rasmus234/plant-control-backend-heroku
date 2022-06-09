@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.SignalR;
 using PlantControl.Models;
 
 namespace PlantControl.Server.Hubs;

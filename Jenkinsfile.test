@@ -2,6 +2,10 @@ pipeline {
     agent any
 
     stages {
+        stage('Pull submodule(s)') {
+            sh 'git submodule update --remote'
+        }
+
         stage('Run unit test(s)') {
             steps {
                 dir('PlantControl.Tests') {
