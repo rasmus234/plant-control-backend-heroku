@@ -34,7 +34,7 @@ public class LoggerHub : Hub<ILoggerHub>
     [HubMethodName("SetConfig")]
     public async Task OnSetConfig(LoggerConfig loggerConfig)
     {
-        var loggerId = loggerConfig.Logging.Id;
+        var loggerId = loggerConfig.Logging.LoggerId;
         var loggerConnectionId = Loggers.FirstOrDefault(x => x.Value.Id == loggerId).Key;
         if (!string.IsNullOrEmpty(loggerConnectionId))
         {
@@ -52,6 +52,8 @@ public class LoggerHub : Hub<ILoggerHub>
     [HubMethodName("GetConfig")]
     public async Task OnGetConfig(string id)
     {
+        
+        var loggerConnectionId = Loggers.FirstOrDefault(x => x.Value.Id == id).Key;
         await Clients.Client(id).GetConfig();
     }
 
