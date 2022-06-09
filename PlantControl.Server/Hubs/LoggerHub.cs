@@ -54,7 +54,7 @@ public class LoggerHub : Hub<ILoggerHub>
     {
         
         var loggerConnectionId = Loggers.FirstOrDefault(x => x.Value.Id == id).Key;
-        await Clients.Client(id).GetConfig();
+        await Clients.Client(loggerConnectionId).GetConfig();
     }
 
     //Forward a loggerconfig from a logger to all subscribers(xamarin app etc.)
