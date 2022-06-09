@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\models\PlantControl.Models.csproj" />
+      <ProjectReference Include="..\plant-control-models\PlantControl.Models\PlantControl.Models.csproj" />
     </ItemGroup>
 
 </Project>
