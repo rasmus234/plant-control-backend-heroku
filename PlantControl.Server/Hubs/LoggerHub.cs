@@ -24,7 +24,7 @@ public class LoggerHub : Hub<ILoggerHub>
         if (isLogger)
         {
             Loggers.Remove(Context.ConnectionId);
-            await Clients.Group(SubscriberGroup).RemoveLogger(logger.Id);
+            await Clients.Group(SubscriberGroup).RemoveLogger(logger._Id);
         }
 
         await base.OnDisconnectedAsync(exception);
@@ -35,7 +35,7 @@ public class LoggerHub : Hub<ILoggerHub>
     public async Task OnSetConfig(LoggerConfig loggerConfig)
     {
         var loggerId = loggerConfig.Logging.LoggerId;
-        var loggerConnectionId = Loggers.FirstOrDefault(x => x.Value.Id == loggerId).Key;
+        var loggerConnectionId = Loggers.FirstOrDefault(x => x.Value._Id == loggerId).Key;
         if (!string.IsNullOrEmpty(loggerConnectionId))
         {
             await Clients.Client(loggerConnectionId).SetConfig(loggerConfig);
@@ -53,7 +53,7 @@ public class LoggerHub : Hub<ILoggerHub>
     public async Task OnGetConfig(string id)
     {
         
-        var loggerConnectionId = Loggers.FirstOrDefault(x => x.Value.Id == id).Key;
+        var loggerConnectionId = Loggers.FirstOrDefault(x => x.Value._Id == id).Key;
         await Clients.Client(loggerConnectionId).GetConfig();
     }
 
@@ -69,12 +69,12 @@ public class LoggerHub : Hub<ILoggerHub>
     public async Task<bool> OnConnectLogger(string id)
     {
         //if logger already exists, return false
-        if (Loggers.Values.Any(x => x.Id == id))
+        if (Loggers.Values.Any(x => x._Id == id))
         {
             return false;
         }
 
-        var logger = new Logger {Id = id, LoginTime = DateTime.Now};
+        var logger = new Logger {_Id = id, LoginTime = DateTime.Now};
         Loggers[Context.ConnectionId] = logger;
         await Groups.AddToGroupAsync(Context.ConnectionId, LoggerGroup);
         await Clients.Group(SubscriberGroup).NewLogger(logger);
