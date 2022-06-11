@@ -2,12 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage('Pull submodule(s)') {
-            steps {
-                sh 'git submodule update --init --recursive --remote'
-            }
-        }
-
         stage('Run unit test(s)') {
             steps {
                 dir('PlantControl.Tests') {

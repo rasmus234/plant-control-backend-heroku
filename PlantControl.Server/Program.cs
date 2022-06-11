@@ -15,7 +15,7 @@ app.UseCors(policyBuilder =>
     policyBuilder.SetIsOriginAllowed(_ => true);
 });
 
-app.MapHub<LoggerHub>("/hubs/logger");
 
+app.MapHub<LoggerHub>("/hubs/logger");
 
 app.Run();
