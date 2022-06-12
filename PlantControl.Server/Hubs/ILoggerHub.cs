@@ -13,4 +13,6 @@ public interface ILoggerHub
     Task RemoveLogger(string id);
 
     Task ReceiveLog(Log log);
+    
+    Task Calibrate(string parameter);
 }

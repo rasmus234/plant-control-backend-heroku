@@ -11,16 +11,13 @@ public class LoggerHub : Hub<ILoggerHub>
     //connectionId is key, logger is value
     private static Dictionary<string, Logger> Loggers { get; } = new();
 
-    public override async Task OnConnectedAsync()
-    {
-        await base.OnConnectedAsync();
-    }
+    public override async Task OnConnectedAsync() => await base.OnConnectedAsync();
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         //remove logger from dictionary
         var isLogger = Loggers.TryGetValue(Context.ConnectionId, out var logger);
-        
+
         if (isLogger)
         {
             Loggers.Remove(Context.ConnectionId);
@@ -30,39 +27,28 @@ public class LoggerHub : Hub<ILoggerHub>
         await base.OnDisconnectedAsync(exception);
     }
 
+    private static string GetLoggerConnectionId(string loggerId) => Loggers.FirstOrDefault(x => x.Value.Id == loggerId).Key;
+
     //forward a request to change a specific loggers config
     [HubMethodName("SetConfig")]
     public async Task OnSetConfig(Config config)
     {
         var loggerId = config.Logging.LoggerId;
-        var loggerConnectionId = Loggers.FirstOrDefault(x => x.Value.Id == loggerId).Key;
-        if (!string.IsNullOrEmpty(loggerConnectionId))
-        {
-            await Clients.Client(loggerConnectionId).SetConfig(config);
-        }
+        var loggerConnectionId = GetLoggerConnectionId(loggerId);
+        if (!string.IsNullOrEmpty(loggerConnectionId)) await Clients.Client(loggerConnectionId).SetConfig(config);
     }
 
     //forward request to get config to all loggers
     [HubMethodName("GetAllConfigs")]
-    public async Task OnGetAllConfigs()
-    {
-        await Clients.Group(LoggerGroup).GetConfig();
-    }
+    public async Task OnGetAllConfigs() => await Clients.Group(LoggerGroup).GetConfig();
 
     //Forward a request for a config to a logger
     [HubMethodName("GetConfig")]
-    public async Task OnGetConfig(string id)
-    {
-        var loggerConnectionId = Loggers.FirstOrDefault(x => x.Value.Id == id).Key;
-        await Clients.Client(loggerConnectionId).GetConfig();
-    }
+    public async Task OnGetConfig(string id) => await Clients.Client(GetLoggerConnectionId(id)).GetConfig();
 
     //Forward config from a logger to all subscribers(xamarin app etc.)
     [HubMethodName("SendConfig")]
-    public async Task OnSendConfig(Config loggerConfig)
-    {
-        await Clients.Group(SubscriberGroup).ReceiveConfig(loggerConfig);
-    }
+    public async Task OnSendConfig(Config loggerConfig) => await Clients.Group(SubscriberGroup).ReceiveConfig(loggerConfig);
 
     //create a new logger and add it to the dictionary. after that, tell all subscribers
     [HubMethodName("ConnectLogger")]
@@ -71,7 +57,7 @@ public class LoggerHub : Hub<ILoggerHub>
         //if logger already exists, return false
         if (Loggers.Values.Any(x => x.Id == id)) return false;
 
-        var logger = new Logger { Id = id };
+        var logger = new Logger {Id = id};
         Loggers[Context.ConnectionId] = logger;
 
         await Groups.AddToGroupAsync(Context.ConnectionId, LoggerGroup);
@@ -82,30 +68,25 @@ public class LoggerHub : Hub<ILoggerHub>
 
     //subscribe to messages about loggers
     [HubMethodName("Subscribe")]
-    public async Task OnSubscribe()
-    {
-        await Groups.AddToGroupAsync(Context.ConnectionId, SubscriberGroup);
-    }
+    public async Task OnSubscribe() => await Groups.AddToGroupAsync(Context.ConnectionId, SubscriberGroup);
 
     //unsubscribe from messages about loggers
     [HubMethodName("Unsubscribe")]
-    public async Task OnUnsubscribe()
-    {
-        await Groups.RemoveFromGroupAsync(Context.ConnectionId, SubscriberGroup);
-    }
+    public async Task OnUnsubscribe() => await Groups.RemoveFromGroupAsync(Context.ConnectionId, SubscriberGroup);
 
     //return all online loggers
     [HubMethodName("GetOnlineLoggers")]
-    public IEnumerable<Logger> OnGetOnlineLoggers()
-    {
-        return Loggers.Values;
-    }
+    public IEnumerable<Logger> OnGetOnlineLoggers() => Loggers.Values;
 
 
     //forward a message from a logger to all subscribers
     [HubMethodName("SendLog")]
-    public async Task OnSendLog(Log log)
+    public async Task OnSendLog(Log log) => await Clients.Group(SubscriberGroup).ReceiveLog(log);
+
+    [HubMethodName("Calibrate")]
+    public async Task OnCalibrate(string calibrationParameter, string loggerId)
     {
-        await Clients.Group(SubscriberGroup).ReceiveLog(log);
+        await Clients.Client(GetLoggerConnectionId(loggerId)).Calibrate(calibrationParameter);
+        
     }
 }
