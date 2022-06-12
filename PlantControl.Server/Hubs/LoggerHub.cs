@@ -16,9 +16,7 @@ public class LoggerHub : Hub<ILoggerHub>
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         //remove logger from dictionary
-        var isLogger = Loggers.TryGetValue(Context.ConnectionId, out var logger);
-
-        if (isLogger)
+        if (Loggers.TryGetValue(Context.ConnectionId, out var logger))
         {
             Loggers.Remove(Context.ConnectionId);
             await Clients.Group(SubscriberGroup).RemoveLogger(logger.Id);
@@ -27,7 +25,10 @@ public class LoggerHub : Hub<ILoggerHub>
         await base.OnDisconnectedAsync(exception);
     }
 
-    private static string GetLoggerConnectionId(string loggerId) => Loggers.FirstOrDefault(x => x.Value.Id == loggerId).Key;
+    private static string GetLoggerConnectionId(string loggerId)
+    {
+        return Loggers.FirstOrDefault(x => x.Value.Id == loggerId).Key;
+    }
 
     //forward a request to change a specific loggers config
     [HubMethodName("SetConfig")]
