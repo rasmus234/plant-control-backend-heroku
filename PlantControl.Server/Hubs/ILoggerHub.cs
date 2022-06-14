@@ -7,6 +7,7 @@ public interface ILoggerHub
     Task GetConfig();
 
     Task SetConfig(Config config);
+    Task SetPairingId(string id);
     Task ReceiveConfig(Config config);
 
     Task NewLogger(Logger logger);

@@ -39,6 +39,13 @@ public class LoggerHub : Hub<ILoggerHub>
         if (!string.IsNullOrEmpty(loggerConnectionId)) await Clients.Client(loggerConnectionId).SetConfig(config);
     }
 
+    [HubMethodName("SetPairingId")]
+    public async Task OnSetPairingId(string loggerId, string pairingId)
+    {
+        var id = GetLoggerConnectionId(loggerId);
+        if (!string.IsNullOrEmpty(id)) await Clients.Client(id).SetPairingId(pairingId);
+    }
+
     //forward request to get config to all loggers
     [HubMethodName("GetAllConfigs")]
     public async Task OnGetAllConfigs() => await Clients.Group(LoggerGroup).GetConfig();
